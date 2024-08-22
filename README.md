@@ -36,9 +36,15 @@ Make sure you have the following installed on your machine:
    yarn install
    ```
 
-3. Open the `.env` file in the root directory of your project and modify it with your specific configuration.
+3. Ensure your MongoDB server is running. You can start it with the following command:
 
-4. Start the bot:
+   ```bash
+   mongod
+   ```
+
+4. Open the `.env` file in the root directory of your project and modify it with your specific configuration.
+
+5. Start the bot:
 
    ```bash
    npm start
