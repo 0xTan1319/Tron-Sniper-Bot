@@ -5,7 +5,7 @@
     "start": "tsx src/index.ts"
   },
   "author": "impredmet",
-  "license": "ISC",
+  "license": "MIT",
   "description": "The ultimate bot for sniping and trading on TRON.",
   "dependencies": {
     "@noble/secp256k1": "^2.1.0",
