@@ -10,7 +10,7 @@ export function startCommand(msg: TelegramBot.Message, bot: TelegramBot) {
   try {
     const chatId = msg.chat.id;
 
-    const text = `Welcome to TRON Sniper/Trading Bot
+    const text = `Welcome to TRON Sniper Bot
 
 🔹 The ultimate bot for sniping and trading on TRON.
 

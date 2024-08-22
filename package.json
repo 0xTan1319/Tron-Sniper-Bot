@@ -1,5 +1,5 @@
 {
-  "name": "tronsniperbot",
+  "name": "tron-sniper",
   "version": "1.0.0",
   "scripts": {
     "start": "tsx src/index.ts"
