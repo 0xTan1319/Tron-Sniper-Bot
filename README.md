@@ -48,14 +48,12 @@ Make sure you have the following installed on your machine:
 
 The bot will now start and connect to Telegram, MongoDB, and the TRON network.
 
-### Project Structure
+### Available Commands
 
-- `src/index.ts`: The main entry point of the bot.
-- `src/config.ts`: Configuration file for the bot.
-- `src/callbacks/`: Contains all the Telegram callback handlers.
-- `src/commands/`: Contains the command handlers for the bot.
-- `src/server/`: Contains server-related logic such as sniping processes.
-- `src/utils/`: Utility functions and classes.
+- `/start`: Initializes the bot and provides a welcome message.
+- `/wallets`: Displays all wallets associated with your account.
+- `/positions`: Shows your current token positions.
+- `/pendingsnipes`: Lists all your pending sniping operations.
 
 ### License
 
