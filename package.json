@@ -1,0 +1,23 @@
+{
+  "name": "tronsniperbot",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "tsx src/index.ts"
+  },
+  "author": "impredmet",
+  "license": "ISC",
+  "description": "The ultimate bot for sniping and trading on TRON.",
+  "dependencies": {
+    "@noble/secp256k1": "^2.1.0",
+    "colors": "^1.4.0",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.13.2",
+    "mongodb": "^6.8.0",
+    "node-telegram-bot-api": "^0.66.0",
+    "tronweb": "^5.3.2"
+  },
+  "devDependencies": {
+    "@types/node-telegram-bot-api": "^0.64.7",
+    "tsx": "^4.17.0"
+  }
+}
