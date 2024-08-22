@@ -1,13 +1,13 @@
 # TRON Sniper
 
-Welcome to the **TRON Sniper**! This bot is designed to help you snipe and trade tokens on the TRON blockchain using SunSwap. It's highly configurable and easy to set up.
+This bot is designed to help you snipe and trade tokens on the TRON blockchain. It's highly configurable and easy to set up.
 
 ## Features
 
-- **Automated Token Sniping**: Snipe newly listed tokens on SunSwap.
-- **Trading**: Easily buy and sell tokens on the TRON network.
-- **Telegram Integration**: Interact with the bot directly from your Telegram account.
-- **MongoDB**: Store user data securely in a MongoDB database.
+- **Automated Token Sniping**: Monitor specific token contracts and automatically execute trades as soon as a liquidity pair is established on SunSwap.
+- **Effortless Trading**: Simplify buying and selling tokens on the TRON network with automated trade execution.
+- **Telegram Integration**: Control and monitor the bot directly from your Telegram account with an intuitive interface.
+- **Secure Data Storage with MongoDB**: Store user data securely using MongoDB, ensuring privacy and reliability.
 
 ## Getting Started
 
