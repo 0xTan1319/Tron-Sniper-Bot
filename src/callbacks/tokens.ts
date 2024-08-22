@@ -1672,6 +1672,9 @@ export async function sellTokenCallback(
       `Transaction sent: [View on Tronscan](https://tronscan.org/#/transaction/${txID})`,
       {
         parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [[{ text: "❌ Close", callback_data: "close" }]],
+        },
       }
     );
     bot.deleteMessage(chatId, sellingMessage.message_id);
