@@ -415,7 +415,7 @@ class SniperUtils {
 
       if (!decimals) throw new Error("No decimals found");
 
-      const roundedAmountInTokens = Math.floor(amountInTokens);
+      const roundedAmountInTokens = Math.floor(amountInTokens * 10) / 10;
 
       let amountToSend = roundedAmountInTokens * 10 ** decimals;
 
