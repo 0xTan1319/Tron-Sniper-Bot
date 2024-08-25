@@ -281,6 +281,17 @@ export async function changeSlippageCallback(
             return;
           }
 
+          if (slippage > 100) {
+            bot.sendMessage(chatId, "Slippage must be less than 100.", {
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: "❌ Close", callback_data: "close" }],
+                ],
+              },
+            });
+            return;
+          }
+
           const pairAddress = await SniperUtils.getPairAddress(tokenAddress);
 
           if (!pairAddress) {
@@ -757,6 +768,17 @@ export async function snipeNowCallback(
 
           if (slippage < 0) {
             bot.sendMessage(chatId, "Slippage must be greater than 0.", {
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: "❌ Close", callback_data: "close" }],
+                ],
+              },
+            });
+            return;
+          }
+
+          if (slippage > 100) {
+            bot.sendMessage(chatId, "Slippage must be less than 100.", {
               reply_markup: {
                 inline_keyboard: [
                   [{ text: "❌ Close", callback_data: "close" }],
@@ -1438,6 +1460,17 @@ export async function changeSlippageSellCallback(
 
           if (slippage < 0) {
             bot.sendMessage(chatId, "Slippage must be greater than 0.", {
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: "❌ Close", callback_data: "close" }],
+                ],
+              },
+            });
+            return;
+          }
+
+          if (slippage > 100) {
+            bot.sendMessage(chatId, "Slippage must be less than 100.", {
               reply_markup: {
                 inline_keyboard: [
                   [{ text: "❌ Close", callback_data: "close" }],
