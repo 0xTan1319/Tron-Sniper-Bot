@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import dotenv from "dotenv";
 import TronWeb from "tronweb";
 import {
@@ -191,8 +192,8 @@ class SniperUtils {
 
         if (!tokenAddress) throw new Error("No token addresses found");
 
-        const reserveWTRX = reserves[0].toString();
-        const reserveToken = reserves[1].toString();
+        const reserveWTRX = new BigNumber(reserves[0].toString());
+        const reserveToken = new BigNumber(reserves[1].toString());
         const timestamp = reserves[2];
 
         return {
@@ -207,8 +208,8 @@ class SniperUtils {
 
       if (!tokenAddress) throw new Error("No token addresses found");
 
-      const reserveToken = reserves[0].toString();
-      const reserveWTRX = reserves[1].toString();
+      const reserveToken = new BigNumber(reserves[0].toString());
+      const reserveWTRX = new BigNumber(reserves[1].toString());
       const timestamp = reserves[2];
 
       return {
@@ -249,12 +250,23 @@ class SniperUtils {
       throw new Error("No token decimals found");
     }
 
-    const reserveToken = Number(reserves.reserveToken) / 10 ** tokenDecimals;
-    const reserveWTRX = Number(reserves.reserveWTRX) / 10 ** WTRX_DECIMALS;
-    const amountOutMin = (reserveToken * amountIn) / reserveWTRX;
-    const slippageAmount = amountOutMin * (slippagePercentage / 100);
+    const reserveToken = reserves.reserveToken.div(
+      new BigNumber(10).pow(tokenDecimals)
+    );
 
-    return ((amountOutMin - slippageAmount) * 10 ** tokenDecimals).toFixed(0);
+    const reserveWTRX = reserves.reserveWTRX.div(
+      new BigNumber(10).pow(WTRX_DECIMALS)
+    );
+
+    const amountOutMin = reserveToken
+      .multipliedBy(new BigNumber(amountIn))
+      .div(reserveWTRX);
+
+    const slippageAmount = amountOutMin
+      .multipliedBy(new BigNumber(slippagePercentage))
+      .div(new BigNumber(100));
+
+    return amountOutMin.minus(slippageAmount).toFixed(0);
   }
 
   static async getAmountOutMinUsingToken(
@@ -283,12 +295,23 @@ class SniperUtils {
       throw new Error("No token decimals found");
     }
 
-    const reserveToken = Number(reserves.reserveToken) / 10 ** tokenDecimals;
-    const reserveWTRX = Number(reserves.reserveWTRX) / 10 ** WTRX_DECIMALS;
-    const amountOutMin = (reserveWTRX * amountIn) / reserveToken;
-    const slippageAmount = amountOutMin * (slippagePercentage / 100);
+    const reserveToken = reserves.reserveToken.div(
+      new BigNumber(10).pow(tokenDecimals)
+    );
 
-    return ((amountOutMin - slippageAmount) * 10 ** WTRX_DECIMALS).toFixed(0);
+    const reserveWTRX = reserves.reserveWTRX.div(
+      new BigNumber(10).pow(WTRX_DECIMALS)
+    );
+
+    const amountOutMin = reserveWTRX
+      .multipliedBy(new BigNumber(amountIn))
+      .div(reserveToken);
+
+    const slippageAmount = amountOutMin
+      .multipliedBy(new BigNumber(slippagePercentage))
+      .div(new BigNumber(100));
+
+    return amountOutMin.minus(slippageAmount).toFixed(0);
   }
 
   static async buyToken(
@@ -323,11 +346,13 @@ class SniperUtils {
       if (!tokenAddressInHEX || !wrtxAddressInHEX)
         throw new Error("No address found");
 
-      var options = {
-        callValue: amountInWTRX * 10 ** WTRX_DECIMALS,
-      } as Options;
+      const options = {
+        callValue: new BigNumber(amountInWTRX)
+          .multipliedBy(new BigNumber(10).pow(WTRX_DECIMALS))
+          .toNumber(),
+      } as unknown as Options;
 
-      var parameter = [
+      const parameter = [
         { type: "uint256", value: amountOutMin.toString() },
         { type: "address[]", value: [wrtxAddressInHEX, tokenAddressInHEX] },
         { type: "address", value: walletAddress },
@@ -417,11 +442,13 @@ class SniperUtils {
 
       const roundedAmountInTokens = Math.floor(amountInTokens * 10) / 10;
 
-      let amountToSend = roundedAmountInTokens * 10 ** decimals;
+      const amountToSend = new BigNumber(roundedAmountInTokens)
+        .multipliedBy(new BigNumber(10).pow(decimals))
+        .toFixed(0);
 
       const tokenBalance = await tokenContract.balanceOf(walletAddress).call();
 
-      if (Number(tokenBalance) < amountToSend)
+      if (new BigNumber(tokenBalance).lt(amountToSend))
         throw new Error("Insufficient balance");
 
       const amountOutMin = await this.getAmountOutMinUsingToken(
@@ -442,7 +469,7 @@ class SniperUtils {
         SUNSWAP_ROUTER_ADDRESS
       );
 
-      if (Number(allowance) < amountToSend) {
+      if (!allowance || new BigNumber(allowance).lt(amountToSend)) {
         const approve = await this.approveToken(
           tokenAddress,
           walletAddress,
@@ -466,7 +493,7 @@ class SniperUtils {
       if (!tokenAddressInHEX || !wrtxAddressInHEX)
         throw new Error("No address found");
 
-      var parameter = [
+      const parameter = [
         { type: "uint256", value: amountToSend.toString() },
         { type: "uint256", value: amountOutMin.toString() },
         { type: "address[]", value: [tokenAddressInHEX, wrtxAddressInHEX] },
@@ -538,7 +565,7 @@ class SniperUtils {
 
       if (!allowance) throw new Error("No allowance found");
 
-      return Number(allowance.toString());
+      return new BigNumber(allowance.toString());
     } catch (error) {
       console.error(`${errorLOG} ${error}`);
       return null;

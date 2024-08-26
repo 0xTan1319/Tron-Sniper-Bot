@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import TelegramBot from "node-telegram-bot-api";
 import { WTRX_DECIMALS } from "../config";
 import { errorLOG } from "../utils/logs";
@@ -42,7 +43,9 @@ export async function walletCallback(
       wallets.map(async (wallet) => {
         const balance = await SniperUtils.getBalance(wallet.address);
 
-        const balanceTRX = balance / 10 ** WTRX_DECIMALS;
+        const balanceTRX = new BigNumber(balance).div(
+          new BigNumber(10).pow(WTRX_DECIMALS)
+        );
 
         return `💰 *${balanceTRX.toFixed(2)} TRX* in \`${wallet.address}\`\n`;
       })
@@ -674,7 +677,9 @@ export async function refreshWalletCallback(
       wallets.map(async (wallet) => {
         const balance = await SniperUtils.getBalance(wallet.address);
 
-        const balanceTRX = balance / 10 ** WTRX_DECIMALS;
+        const balanceTRX = new BigNumber(balance).div(
+          new BigNumber(10).pow(WTRX_DECIMALS)
+        );
 
         return `💰 *${balanceTRX.toFixed(2)} TRX* in \`${wallet.address}\`\n`;
       })

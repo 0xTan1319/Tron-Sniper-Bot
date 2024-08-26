@@ -8,7 +8,7 @@ export function formatNumber(number: number) {
   if (number >= 1e3) {
     return (number / 1e3).toFixed(2) + "K";
   }
-  return number.toString();
+  return number.toFixed(2);
 }
 
 export function formatElapsedTime(createdDate: Date) {

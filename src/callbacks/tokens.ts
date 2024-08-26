@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import TelegramBot from "node-telegram-bot-api";
 import { TRC20_ABI, WTRX_DECIMALS } from "../config";
 import { formatElapsedTime, formatNumber } from "../utils/format";
@@ -270,19 +271,8 @@ export async function changeSlippageCallback(
             return;
           }
 
-          if (slippage < 0) {
-            bot.sendMessage(chatId, "Slippage must be greater than 0.", {
-              reply_markup: {
-                inline_keyboard: [
-                  [{ text: "❌ Close", callback_data: "close" }],
-                ],
-              },
-            });
-            return;
-          }
-
-          if (slippage > 100) {
-            bot.sendMessage(chatId, "Slippage must be less than 100.", {
+          if (slippage < 0 || slippage > 100) {
+            bot.sendMessage(chatId, "Slippage must be between 0 and 100.", {
               reply_markup: {
                 inline_keyboard: [
                   [{ text: "❌ Close", callback_data: "close" }],
@@ -520,7 +510,9 @@ export async function buyTokenCallback(
       wallets.map(async (wallet) => {
         const balance = await SniperUtils.getBalance(wallet.address);
 
-        const balanceTRX = balance / 10 ** WTRX_DECIMALS;
+        const balanceTRX = new BigNumber(balance).div(
+          new BigNumber(10).pow(WTRX_DECIMALS)
+        );
 
         return `💰 *${balanceTRX.toFixed(2)} TRX* in \`${wallet.address}\`\n`;
       })
@@ -580,7 +572,9 @@ export async function confirmBuyCallback(
 
     const balance = await SniperUtils.getBalance(wallet.address);
 
-    const balanceTRX = balance / 10 ** WTRX_DECIMALS;
+    const balanceTRX = new BigNumber(balance)
+      .div(new BigNumber(10).pow(WTRX_DECIMALS))
+      .toNumber();
 
     if (balanceTRX < amount) {
       bot.sendMessage(chatId, "Insufficient balance.", {
@@ -673,7 +667,9 @@ export async function snipeTokenCallback(
       wallets.map(async (wallet) => {
         const balance = await SniperUtils.getBalance(wallet.address);
 
-        const balanceTRX = balance / 10 ** WTRX_DECIMALS;
+        const balanceTRX = new BigNumber(balance).div(
+          new BigNumber(10).pow(WTRX_DECIMALS)
+        );
 
         return `💰 *${balanceTRX.toFixed(2)} TRX* in \`${wallet.address}\`\n`;
       })
@@ -766,19 +762,8 @@ export async function snipeNowCallback(
             return;
           }
 
-          if (slippage < 0) {
-            bot.sendMessage(chatId, "Slippage must be greater than 0.", {
-              reply_markup: {
-                inline_keyboard: [
-                  [{ text: "❌ Close", callback_data: "close" }],
-                ],
-              },
-            });
-            return;
-          }
-
-          if (slippage > 100) {
-            bot.sendMessage(chatId, "Slippage must be less than 100.", {
+          if (slippage < 0 || slippage > 100) {
+            bot.sendMessage(chatId, "Slippage must be between 0 and 100.", {
               reply_markup: {
                 inline_keyboard: [
                   [{ text: "❌ Close", callback_data: "close" }],
@@ -837,7 +822,9 @@ export async function snipeNowCallback(
 
                 const balance = await SniperUtils.getBalance(wallet.address);
 
-                const balanceTRX = balance / 10 ** WTRX_DECIMALS;
+                const balanceTRX = new BigNumber(balance)
+                  .div(new BigNumber(10).pow(WTRX_DECIMALS))
+                  .toNumber();
 
                 if (balanceTRX < parsedNumber) {
                   bot.sendMessage(chatId, "Insufficient balance.", {
@@ -1044,9 +1031,12 @@ export async function myPositionsCallback(
 
         if (!decimals) continue;
 
-        const balance = (Number(position.balance) / 10 ** decimals).toFixed(2);
+        const balance = new BigNumber(position.balance)
+          .div(new BigNumber(10).pow(decimals))
+          .toNumber()
+          .toFixed(3);
 
-        if (Number(balance) < 1) continue;
+        if (Number(balance) === 0) continue;
 
         const pairAddress = await SniperUtils.getPairAddress(position.address);
 
@@ -1228,16 +1218,10 @@ export async function refreshSellCallback(
       return;
     }
 
-    const balance = (Number(position.balance) / 10 ** decimals).toFixed(2);
-
-    if (Number(balance) < 1) {
-      bot.sendMessage(chatId, "Position not found.", {
-        reply_markup: {
-          inline_keyboard: [[{ text: "❌ Close", callback_data: "close" }]],
-        },
-      });
-      return;
-    }
+    const balance = new BigNumber(position.balance)
+      .div(new BigNumber(10).pow(decimals))
+      .toNumber()
+      .toFixed(3);
 
     const pairAddress = await SniperUtils.getPairAddress(position.address);
 
@@ -1387,16 +1371,10 @@ export async function changeSlippageSellCallback(
       return;
     }
 
-    const balance = (Number(position.balance) / 10 ** decimals).toFixed(2);
-
-    if (Number(balance) < 1) {
-      bot.sendMessage(chatId, "Position not found.", {
-        reply_markup: {
-          inline_keyboard: [[{ text: "❌ Close", callback_data: "close" }]],
-        },
-      });
-      return;
-    }
+    const balance = new BigNumber(position.balance)
+      .div(new BigNumber(10).pow(decimals))
+      .toNumber()
+      .toFixed(3);
 
     const pairAddress = await SniperUtils.getPairAddress(position.address);
 
@@ -1458,19 +1436,8 @@ export async function changeSlippageSellCallback(
             return;
           }
 
-          if (slippage < 0) {
-            bot.sendMessage(chatId, "Slippage must be greater than 0.", {
-              reply_markup: {
-                inline_keyboard: [
-                  [{ text: "❌ Close", callback_data: "close" }],
-                ],
-              },
-            });
-            return;
-          }
-
-          if (slippage > 100) {
-            bot.sendMessage(chatId, "Slippage must be less than 100.", {
+          if (slippage < 0 || slippage > 100) {
+            bot.sendMessage(chatId, "Slippage must be between 0 and 100.", {
               reply_markup: {
                 inline_keyboard: [
                   [{ text: "❌ Close", callback_data: "close" }],
@@ -1629,22 +1596,13 @@ export async function sellTokenCallback(
       return;
     }
 
-    const balance = (Number(position.balance) / 10 ** decimals).toFixed(2);
+    const balance = new BigNumber(position.balance)
+      .div(new BigNumber(10).pow(decimals))
+      .toNumber();
 
-    if (Number(balance) < 1) {
-      bot.sendMessage(chatId, "Position not found.", {
-        reply_markup: {
-          inline_keyboard: [[{ text: "❌ Close", callback_data: "close" }]],
-        },
-      });
-      return;
-    }
+    const amount = (balance * percentageToSell) / 100;
 
-    const amount = Number(
-      (Number(balance) * (percentageToSell / 100)).toFixed(2)
-    );
-
-    if (Number(balance) < amount) {
+    if (balance < amount) {
       bot.sendMessage(chatId, "Insufficient balance.", {
         reply_markup: {
           inline_keyboard: [[{ text: "❌ Close", callback_data: "close" }]],
@@ -1654,7 +1612,9 @@ export async function sellTokenCallback(
     }
 
     const balanceTRX = await SniperUtils.getBalance(wallet.address);
-    const balanceTRXNumber = balanceTRX / 10 ** WTRX_DECIMALS;
+    const balanceTRXNumber = new BigNumber(balanceTRX)
+      .div(new BigNumber(10).pow(WTRX_DECIMALS))
+      .toNumber();
 
     if (balanceTRXNumber < 75) {
       bot.sendMessage(
@@ -1792,16 +1752,9 @@ export async function sellCustomTokenCallback(
       return;
     }
 
-    const balance = (Number(position.balance) / 10 ** decimals).toFixed(2);
-
-    if (Number(balance) < 1) {
-      bot.sendMessage(chatId, "Position not found.", {
-        reply_markup: {
-          inline_keyboard: [[{ text: "❌ Close", callback_data: "close" }]],
-        },
-      });
-      return;
-    }
+    const balance = new BigNumber(position.balance)
+      .div(new BigNumber(10).pow(decimals))
+      .toNumber();
 
     const text = `Enter the percentage of ${position.symbol} you want to sell.`;
 
@@ -1840,21 +1793,23 @@ export async function sellCustomTokenCallback(
           }
 
           if (percentageNumber < 0 || percentageNumber > 100) {
-            bot.sendMessage(chatId, "Invalid amount.", {
-              reply_markup: {
-                inline_keyboard: [
-                  [{ text: "❌ Close", callback_data: "close" }],
-                ],
-              },
-            });
+            bot.sendMessage(
+              chatId,
+              "The percentage must be between 0 and 100.",
+              {
+                reply_markup: {
+                  inline_keyboard: [
+                    [{ text: "❌ Close", callback_data: "close" }],
+                  ],
+                },
+              }
+            );
             return;
           }
 
-          const parsedNumber = Number(
-            (Number(balance) * (percentageNumber / 100)).toFixed(2)
-          );
+          const parsedNumber = balance * (percentageNumber / 100);
 
-          if (Number(balance) < parsedNumber) {
+          if (balance < parsedNumber) {
             bot.sendMessage(chatId, "Insufficient balance.", {
               reply_markup: {
                 inline_keyboard: [
