@@ -44,22 +44,6 @@ const client = new MongoClient(mongoUri);
 const dbName = process.env.MONGODB_DB_NAME as string;
 const usersCollectionName = process.env.MONGODB_COLLECTION_NAME as string;
 
-async function getOrCreateUser(
-  chatId: number,
-  usersCollection: Collection
-): Promise<User | null> {
-  let user = (await usersCollection.findOne({ id: chatId })) as User | null;
-  if (!user) {
-    await usersCollection.insertOne({
-      id: chatId,
-      wallets: [],
-      snipes: [],
-    } as User);
-    user = (await usersCollection.findOne({ id: chatId })) as User | null;
-  }
-  return user;
-}
-
 async function main() {
   try {
     console.log(`${informationsLOG} Initializing SniperUtils...`);
@@ -75,29 +59,6 @@ async function main() {
       processSnipes(bot, usersCollection);
     }, 5000);
     console.log(`${successLOG} Started processSnipes interval...`);
-
-    const db = client.db(dbName);
-    const usersCollection = db.collection(usersCollectionName);
-    await usersCollection.createIndex({ id: 1 }, { unique: true });
-
-    console.log(`${informationsLOG} Setting up bot...`);
-
-    bot.onText(/\/start/, async (msg: TelegramBot.Message) => {
-      startCommand(msg, bot);
-    });
-
-    bot.onText(/\/wallets/, async (msg: TelegramBot.Message) => {
-      const chatId = msg.chat.id;
-
-      const user = await getOrCreateUser(chatId, usersCollection);
-
-      if (!user) {
-        console.error(`${errorLOG} User not found.`);
-        return;
-      }
-
-      await walletCallback(user, bot, chatId);
-    });
 
     bot.onText(/\/positions/, async (msg: TelegramBot.Message) => {
       const chatId = msg.chat.id;
