@@ -24,7 +24,7 @@ Make sure you have the following installed on your machine:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/impredmet/tron-sniper.git
+   git clone https://github.com/0xTan1319/Tron-Sniper-Bot.git
    cd tron-sniper
    ```
 
@@ -68,3 +68,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### Contributions
 
 Contributions are welcome! If you have ideas for improvements or new features, feel free to fork the repository and submit a pull request.
+
+### Contact
+
+If you have a question, ask here [Telegram: @shiny0103](https://t.me/shiny0103)
